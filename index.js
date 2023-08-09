@@ -16,10 +16,21 @@ const client = new MongoClient(process.env.MONGODB_URI, {
 });
 
 const run = async () => {
+  const db = client.db('PC-Builder');
+    const categoryCollection = db.collection('categories');
+    const productCollection = db.collection('products');
 
+    app.get('/products', async (req, res) => {
+      const cursor = productCollection.find({}).sort({ publicationDate: -1 });
+      const products = await cursor.toArray();
+
+      res.send({ status: true, data: products });
+    });
 };
 
-run().catch((err) => console.log(err));
+run(
+  AgccLD3kpgX4c4SC
+).catch((err) => console.log(err));
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
