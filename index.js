@@ -16,7 +16,9 @@ const client = new MongoClient(process.env.MONGODB_URI, {
 });
 
 const run = async () => {
-  const db = client.db('Pc');
+  try {
+    const db = client.db('craft');
+    const categoryCollection = db.collection('categories');
     const productCollection = db.collection('products');
 
     app.get('/products', async (req, res) => {
@@ -29,13 +31,19 @@ const run = async () => {
     app.get('/products/:id', async (req, res) => {
       const id = req.params.id
       const products = await productCollection.findOne({ _id: ObjectId(id) })
+      console.log(products,'ko');
 
       res.send({ status: true, data: products });
     });
+
+
+
+
+  } finally {
+  }
 };
 
-run(
-).catch((err) => console.log(err));
+run().catch((err) => console.log(err));
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -44,3 +52,70 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+  // Reviews API
+/*     app.post('/review/:id', async (req, res) => {
+      const bookId = req.params.id;
+      const review = req.body;
+
+      const result = await bookCollection.updateOne(
+        { _id: ObjectId(bookId) },
+        { $push: { reviews: review } }
+      );
+
+
+      if (result.modifiedCount !== 1) {
+        res.json({ error: 'Book not found or review not added' });
+        return;
+      }
+
+      res.json({ message: 'Review added successfully' });
+    });
+
+    app.get('/review/:id', async (req, res) => {
+      const bookId = req.params.id;
+
+      const result = await bookCollection.findOne(
+        { _id: ObjectId(bookId) },
+        { projection: { _id: 0, reviews: 1 } }
+      );
+
+      if (result) {
+        res.json(result);
+      } else {
+        res.status(404).json({ error: 'Book not found' });
+      }
+    });
+
+    app.patch('/review/:id/user/:email', async (req, res) => {
+      const bookId = req.params.id;
+      const userEmail = req.params.email
+      const updatedReview = req.body.review
+
+      const result = await bookCollection.findOneAndUpdate(
+        { _id: ObjectId(bookId), "reviews.userEmail": userEmail },
+        { $set: { "reviews.$.review": updatedReview } }
+      );
+
+      if (result) {
+        return res.json(result);
+      }
+
+      res.status(404).json({ error: 'Book not found' });
+    });
+
+    app.delete('/review/:id/user/:email', async (req, res) => {
+      const bookId = req.params.id;
+      const userEmail = req.params.email
+
+      const result = await bookCollection.findOneAndUpdate(
+        { _id: ObjectId(bookId) },
+        { $pull: { reviews: { userEmail } } }
+      );
+
+      if (result) {
+        return res.json(result);
+      }
+
+      res.status(404).json({ error: 'Book not found' });
+    }); */
