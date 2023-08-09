@@ -36,6 +36,13 @@ const run = async () => {
       res.send({ status: true, data: products });
     });
 
+    app.get('/productsByCategory/:category', async (req, res) => {
+      const category = req.params.category
+      const cursor = productCollection.find({ category }).sort({ publicationDate: -1 });
+      const products = await cursor.toArray();
+
+      res.send({ status: true, data: products });
+    });
 
 
 
