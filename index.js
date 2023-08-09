@@ -16,8 +16,7 @@ const client = new MongoClient(process.env.MONGODB_URI, {
 });
 
 const run = async () => {
-  const db = client.db('PC-Builder');
-    const categoryCollection = db.collection('categories');
+  const db = client.db('Pc');
     const productCollection = db.collection('products');
 
     app.get('/products', async (req, res) => {
@@ -26,10 +25,16 @@ const run = async () => {
 
       res.send({ status: true, data: products });
     });
+
+    app.get('/products/:id', async (req, res) => {
+      const id = req.params.id
+      const products = await productCollection.findOne({ _id: ObjectId(id) })
+
+      res.send({ status: true, data: products });
+    });
 };
 
 run(
-  AgccLD3kpgX4c4SC
 ).catch((err) => console.log(err));
 
 app.get('/', (req, res) => {
